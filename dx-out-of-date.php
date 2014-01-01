@@ -44,6 +44,12 @@ class DX_Out_Of_Date {
 		$current_date = DX_OOD_Helper::get_current_date();
 		
 		$interval = DX_OOD_Helper::get_date_interval( $post_date, $current_date, $duration );
+		
+		// Don't filter if the post is recent.
+		if( $interval < $period ) {
+			return $content;
+		}
+		
 		$box = '<div class="out-of-date">' . do_shortcode( $message ). '</div>';
 		
 		return $box . $content;
