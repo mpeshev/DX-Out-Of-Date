@@ -49,7 +49,7 @@ class DX_OOD_Settings {
 		
 		add_settings_field(
 			'dx_ood_message',
-			__( "Message: (use %%date%% to place the date in text)", 'ood' ),
+			__( "Message: (use [ood_date] to place the post date in text)", 'ood' ),
 			array( $this, 'dx_ood_message_callback' ),
 			'dx-ood',
 			'ood_settings_section'
@@ -105,8 +105,8 @@ class DX_OOD_Settings {
 		}
 		
 		$out .= '<select name="ood_setting[dx_ood_period]">';
-		foreach ( $ood_periods as $value => $label ) {
-			$out .= sprintf( '<option value="%s" %s>%s</option>', $value, selected( $value, $selected, false ), $label );
+		foreach ( $ood_periods as $number ) {
+			$out .= sprintf( '<option value="%s" %s>%s</option>', $number, selected( $number, $selected, false ), $number );
 		}
 		$out .= '</select>';
 		
