@@ -63,6 +63,14 @@ class DX_OOD_Settings {
 			'ood_settings_section'
 		);
 		
+		add_settings_field(
+			'dx_ood_skin',
+			__( "Choose a skin for your template", 'ood' ),
+			array( $this, 'dx_ood_skin_callback' ),
+			'dx-ood',
+			'ood_settings_section'
+		);
+		
 	}
 	
 	public function ood_settings_callback() {
@@ -110,6 +118,25 @@ class DX_OOD_Settings {
 		}
 		$out .= '</select>';
 		
+		echo $out;
+	}
+	
+	public function dx_ood_skin_callback() {
+		$selected = '';
+		$out = '';
+	
+		$ood_skins = apply_filters( 'dx_ood_skins', DX_Out_Of_Date::$skins );
+	
+		if ( ! empty( $this->ood_setting ) && isset ( $this->ood_setting['dx_ood_skin'] ) ) {
+			$selected = $this->ood_setting['dx_ood_skin'];
+		}
+	
+		$out .= '<select name="ood_setting[dx_ood_skin]">';
+		foreach ( $ood_skins as $skin ) {
+			$out .= sprintf( '<option value="%s" %s>%s</option>', $skin, selected( $skin, $selected, false ), $skin );
+		}
+		$out .= '</select>';
+	
 		echo $out;
 	}
 	

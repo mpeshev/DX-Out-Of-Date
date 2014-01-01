@@ -9,13 +9,24 @@ include_once 'dx-ood-helper.php';
 
 class DX_Out_Of_Date {
 	
+	public static $skins = array(
+			'clean',
+			'light',
+			'dark',
+			'red',
+			'green',
+			'blue'
+	);
+	
 	public function __construct() {
 		add_action( 'admin_init', array( $this, 'register_settings' ), 3 );
 		add_action( 'init', array( $this, 'load_files' ) );
+		
 		// register admin pages for the plugin
 		add_action( 'admin_menu', array( $this, 'register_admin_page' ) );
 		add_action( 'template_redirect', array( $this, 'top_content_filter' ) );
 		add_action( 'init', array( $this, 'add_shortcodes' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_box_style' ) );
 	}
 	
 	public function top_content_filter() {
@@ -93,6 +104,18 @@ class DX_Out_Of_Date {
 	
 	public function ood_date_shortcode( $atts, $content ) {
 		return get_the_date();
+	}
+	
+	public function enqueue_box_style() {
+		$ood_setting = get_option( 'ood_setting', array() );
+
+		if( ! empty( $ood_setting['dx_ood_skin'] ) 
+				&& in_array( $ood_setting['dx_ood_skin'], self::$skins )
+				&& 'clean' !== $ood_setting['dx_ood_skin'] ) {
+			$ood_skin = $ood_setting['dx_ood_skin'];
+			
+			wp_enqueue_style( 'ood-skin', plugin_dir_url( __FILE__ ) . '/css/' . $ood_skin . '.css' );
+		}
 	}
 	
 }
