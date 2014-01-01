@@ -141,7 +141,7 @@ class DX_OOD_Settings {
 	}
 	
 	public function dx_ood_message_callback() {
-		$old_value = '';
+		$old_value = 'This entry has been published on [ood_date] and may be out of date.';
 		$out = '';
 		
 		// Allows for setting default messages
