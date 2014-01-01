@@ -1,9 +1,19 @@
 <?php
 
-
+/**
+ * The Settings API wrapper class, managing all the things.
+ * 
+ * @author nofearinc
+ *
+ */
 class DX_OOD_Settings {
 	
+	/**
+	 * 
+	 * @var array ood_setting an array with all the options
+	 */
 	private $ood_setting;
+	
 	/**
 	 * Construct me
 	 */
@@ -15,10 +25,7 @@ class DX_OOD_Settings {
 	}
 		
 	/**
-	 * Setup the settings
-	 * 
-	 * Add a single checkbox setting for Active/Inactive and a text field 
-	 * just for the sake of our demo
+	 * Register the setting, section and fields
 	 * 
 	 */
 	public function register_settings() {
@@ -26,7 +33,7 @@ class DX_OOD_Settings {
 
 		add_settings_section(
 			'ood_settings_section',
-			__( "Out of Date Settings", 'ood' ),
+			__( "Out of Date admin panel", 'ood' ),
 			array($this, 'ood_settings_callback'),
 			'dx-ood'
 		);
@@ -70,13 +77,15 @@ class DX_OOD_Settings {
 			'dx-ood',
 			'ood_settings_section'
 		);
-		
 	}
 	
 	public function ood_settings_callback() {
-		echo _e( "OOD Settings", 'ood' );
+		echo '<p>' . _e( 'Select how old a post should be in order to be marked as outdated.', 'ood' ) . '</p>';
 	}
 	
+	/**
+	 * The duration dropdown renderer.
+	 */
 	public function dx_ood_duration_callback() {
 		$selected = '';
 		$out = '';
@@ -102,6 +111,9 @@ class DX_OOD_Settings {
 		echo $out;
 	}
 	
+	/**
+	 * The period dropdown renderer. 
+	 */
 	public function dx_ood_period_callback() {
 		$selected = '';
 		$out = '';
@@ -121,6 +133,9 @@ class DX_OOD_Settings {
 		echo $out;
 	}
 	
+	/**
+	 * The skin dropdown renderer.
+	 */
 	public function dx_ood_skin_callback() {
 		$selected = '';
 		$out = '';
@@ -140,6 +155,9 @@ class DX_OOD_Settings {
 		echo $out;
 	}
 	
+	/**
+	 * The message callback renderer. 
+	 */
 	public function dx_ood_message_callback() {
 		$old_value = 'This entry has been published on [ood_date] and may be out of date.';
 		$out = '';
@@ -158,6 +176,9 @@ class DX_OOD_Settings {
 		echo $out;
 	}
 	
+	/**
+	 * The "Enable on posts template" checkbox renderer.
+	 */
 	public function dx_ood_enable_callback() {
 		$checked = false;
 		$out = '';
@@ -180,7 +201,8 @@ class DX_OOD_Settings {
 	 * @param array $input
 	 */
 	public function dx_validate_settings( $input ) {
-		
+		// No validation occurs as everything is possible. 
+		// Message could get all flavors of HTML too, and it's admin-limited.
 		return $input;
 	}
 }

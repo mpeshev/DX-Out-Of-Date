@@ -11,8 +11,18 @@
 
 include_once 'dx-ood-helper.php';
 
+/**
+ * The main class for the Out of Date plugin 
+ * 
+ * @author nofearinc
+ *
+ */
 class DX_Out_Of_Date {
 	
+	/**
+	 * 
+	 * @var array skins list with all available skins
+	 */
 	public static $skins = array(
 			'clean',
 			'light',
@@ -24,7 +34,6 @@ class DX_Out_Of_Date {
 	
 	public function __construct() {
 		add_action( 'admin_init', array( $this, 'register_settings' ), 3 );
-		add_action( 'init', array( $this, 'load_files' ) );
 		
 		// register admin pages for the plugin
 		add_action( 'admin_menu', array( $this, 'register_admin_page' ) );
@@ -33,13 +42,27 @@ class DX_Out_Of_Date {
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_box_style' ) );
 	}
 	
+	/**
+	 * Adding the filter on the top of the content area in a single post view.
+	 * 
+	 * Visible only if the checkbox in the admin has been clicked.
+	 */
 	public function top_content_filter() {
 		$ood_setting = get_option( 'ood_setting', array() );
+		
 		if ( ! empty( $ood_setting['dx_ood_enable'] ) && is_single() ) {
 			add_filter( 'the_content', array( $this, 'top_content_filter_callback' ) );
 		}
 	}
 	
+	/**
+	 * Filtering the content.
+	 * 
+	 * Validating the settings and the intervals before displaying the box.
+	 * 
+	 * @param string $content the original post content
+	 * @return string the altered content entry with the box
+	 */
 	public function top_content_filter_callback( $content ) {
 		$ood_setting = get_option( 'ood_setting', array() );
 
@@ -50,11 +73,12 @@ class DX_Out_Of_Date {
 			return $content;
 		}
 		
+		// Read the options from the admin page
 		$duration = $ood_setting['dx_ood_duration_frame'];
 		$period = (int) $ood_setting['dx_ood_period'];
-
 		$message = $ood_setting['dx_ood_message'];
 		
+		// Calculate the interval
 		$post_date = DX_OOD_Helper::get_post_date();
 		$current_date = DX_OOD_Helper::get_current_date();
 		
@@ -65,15 +89,15 @@ class DX_Out_Of_Date {
 			return $content;
 		}
 		
+		// Generate the box
 		$box = '<div class="out-of-date">' . do_shortcode( $message ). '</div>';
 		
 		return $box . $content;
 	}
 	
-	public function load_files() {
-		
-	}
-	
+	/**
+	 * Register the settings page
+	 */
 	public function register_settings() {
 		include_once 'dx-ood-settings.php';
 
@@ -103,18 +127,25 @@ class DX_Out_Of_Date {
 		return get_the_date();
 	}
 	
+	/**
+	 * Enqueue the skins for the single post view.
+	 * 
+	 * Ignore the clean skin which doesn't set any styles.
+	 */
 	public function enqueue_box_style() {
 		$ood_setting = get_option( 'ood_setting', array() );
 
+		// Only for selected skin (non-clean) and on single page template
 		if( ! empty( $ood_setting['dx_ood_skin'] ) 
 				&& in_array( $ood_setting['dx_ood_skin'], self::$skins )
-				&& 'clean' !== $ood_setting['dx_ood_skin'] ) {
+				&& 'clean' !== $ood_setting['dx_ood_skin']
+				&& is_single() ) {
 			$ood_skin = $ood_setting['dx_ood_skin'];
 			
 			wp_enqueue_style( 'ood-skin', plugin_dir_url( __FILE__ ) . '/css/' . $ood_skin . '.css' );
 		}
 	}
-	
 }
 
+// Aaand... Action!
 new DX_Out_Of_Date();
