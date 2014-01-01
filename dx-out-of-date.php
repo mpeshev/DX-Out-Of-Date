@@ -1,8 +1,12 @@
 <?php
 /**
  * Plugin Name: DX Out of Date
- * Description: Display a notice above each post of yours that has been published a while ago and might be outdated.
- * 
+ * Description: Display a notice above each post of yours that has been published a while ago and may be outdated.
+ * Author: nofearinc
+ * Author URI: http://devwp.eu/
+ * Version: 0.3
+ * License: GPLv2 or later
+ * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
 
 include_once 'dx-ood-helper.php';
@@ -86,13 +90,6 @@ class DX_Out_Of_Date {
 	
 	public function register_admin_page_callback() {
 		include_once 'dx-ood-admin.php';
-	}
-	
-	/**
-	 * Notifying box content generator
-	 */
-	public function old_post_box() {
-		
 	}
 	
 	/**
