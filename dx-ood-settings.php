@@ -1,0 +1,152 @@
+<?php
+
+
+class DX_OOD_Settings {
+	
+	private $ood_setting;
+	/**
+	 * Construct me
+	 */
+	public function __construct() {
+		$this->ood_setting = get_option( 'ood_setting', array() );
+		
+		// register the checkbox
+		add_action('admin_init', array( $this, 'register_settings' ) );
+	}
+		
+	/**
+	 * Setup the settings
+	 * 
+	 * Add a single checkbox setting for Active/Inactive and a text field 
+	 * just for the sake of our demo
+	 * 
+	 */
+	public function register_settings() {
+		register_setting( 'ood_setting', 'ood_setting', array( $this, 'dx_validate_settings' ) );
+
+		add_settings_section(
+			'ood_settings_section',
+			__( "Out of Date Settings", 'ood' ),
+			array($this, 'ood_settings_callback'),
+			'dx-ood'
+		);
+	
+		add_settings_field(
+			'dx_ood_duration_frame',
+			__( "Duration: ", 'ood' ),
+			array( $this, 'dx_ood_duration_callback' ),
+			'dx-ood',
+			'ood_settings_section'
+		);
+		
+		add_settings_field(
+			'dx_ood_period',
+			__( "Period: ", 'ood' ),
+			array( $this, 'dx_ood_period_callback' ),
+			'dx-ood',
+			'ood_settings_section'
+		);
+		
+		add_settings_field(
+			'dx_ood_message',
+			__( "Message: (use %%date%% to place the date in text)", 'ood' ),
+			array( $this, 'dx_ood_message_callback' ),
+			'dx-ood',
+			'ood_settings_section'
+		);
+		
+	}
+	
+	public function ood_settings_callback() {
+		echo _e( "OOD Settings", 'ood' );
+	}
+	
+	public function dx_ood_duration_callback() {
+		$selected = '';
+		$out = '';
+		
+		$ood_durations = array(
+			'years' => __( 'Years', 'ood' ),
+			'months' => __( 'Months', 'ood' ),
+			'days' => __( 'Days', 'ood' ),
+		);
+		
+		$ood_durations = apply_filters( 'dx_ood_durations', $ood_durations );
+		
+		if ( ! empty( $this->ood_setting ) && isset ( $this->ood_setting['dx_ood_duration_frame'] ) ) {
+			$selected = $this->ood_setting['dx_ood_duration_frame'];
+		}
+		
+		$out .= '<select name="ood_setting[dx_ood_duration_frame]">';
+		foreach ( $ood_durations as $value => $label ) {
+			$out .= sprintf( '<option value="%s" %s>%s</option>', $value, selected( $value, $selected, false ), $label );
+		}
+		$out .= '</select>';
+
+		echo $out;
+	}
+	
+	public function dx_ood_period_callback() {
+		$selected = '';
+		$out = '';
+		
+		$ood_periods = apply_filters( 'dx_ood_periods', range( 1, 40 ) );
+		
+		if ( ! empty( $this->ood_setting ) && isset ( $this->ood_setting['dx_ood_period'] ) ) {
+			$selected = $this->ood_setting['dx_ood_period'];
+		}
+		
+		$out .= '<select name="ood_setting[dx_ood_period]">';
+		foreach ( $ood_periods as $value => $label ) {
+			$out .= sprintf( '<option value="%s" %s>%s</option>', $value, selected( $value, $selected, false ), $label );
+		}
+		$out .= '</select>';
+		
+		echo $out;
+	}
+	
+	public function dx_ood_message_callback() {
+		$old_value = '';
+		$out = '';
+		
+		// Allows for setting default messages
+		$ood_message = apply_filters( 'dx_ood_message', $old_value );
+		
+		if ( ! empty( $this->ood_setting ) && isset ( $this->ood_setting['dx_ood_message'] ) ) {
+			$ood_message = $this->ood_setting['dx_ood_message'];
+		}
+		
+		$out .= '<textarea name="ood_setting[dx_ood_message]">';
+		$out .= $ood_message;
+		$out .= '</textarea>';
+		
+		echo $out;
+	}
+	
+	/**
+	 * Helper Settings function if you need a setting from the outside.
+	 * 
+	 * Keep in mind that in our demo the Settings class is initialized in a specific environment and if you
+	 * want to make use of this function, you should initialize it earlier (before the base class)
+	 * 
+	 * @return boolean is enabled
+	 */
+	public function is_enabled() {
+		if(! empty( $this->ood_setting ) && isset ( $this->ood_setting['dx_opt_in'] ) ) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Validate Settings
+	 * 
+	 * Filter the submitted data as per your request and return the array
+	 * 
+	 * @param array $input
+	 */
+	public function dx_validate_settings( $input ) {
+		
+		return $input;
+	}
+}
