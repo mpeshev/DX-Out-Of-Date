@@ -55,6 +55,14 @@ class DX_OOD_Settings {
 			'ood_settings_section'
 		);
 		
+		add_settings_field(
+			'dx_ood_enable',
+			__( "Enable the message by default on all outdated posts (display the box in the template)", 'ood' ),
+			array( $this, 'dx_ood_enable_callback' ),
+			'dx-ood',
+			'ood_settings_section'
+		);
+		
 	}
 	
 	public function ood_settings_callback() {
@@ -123,19 +131,18 @@ class DX_OOD_Settings {
 		echo $out;
 	}
 	
-	/**
-	 * Helper Settings function if you need a setting from the outside.
-	 * 
-	 * Keep in mind that in our demo the Settings class is initialized in a specific environment and if you
-	 * want to make use of this function, you should initialize it earlier (before the base class)
-	 * 
-	 * @return boolean is enabled
-	 */
-	public function is_enabled() {
-		if(! empty( $this->ood_setting ) && isset ( $this->ood_setting['dx_opt_in'] ) ) {
-			return true;
+	public function dx_ood_enable_callback() {
+		$checked = false;
+		$out = '';
+	
+		$ood_checked = apply_filters( 'dx_ood_enable', $checked );
+	
+		if ( ! empty( $this->ood_setting ) && isset ( $this->ood_setting['dx_ood_enable'] ) ) {
+			$ood_checked = $this->ood_setting['dx_ood_enable'];
 		}
-		return false;
+		$out .= sprintf( '<input type="checkbox" name="ood_setting[dx_ood_enable]" %s />', checked( $ood_checked, 'on', false ) );
+	
+		echo $out;
 	}
 	
 	/**
