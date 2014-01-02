@@ -32,6 +32,11 @@ Currently the plugin options are:
 1. Configure your time settings and check the "Enable the message by default on all outdated posts " checkbox
 1. Save the form and you're good to go!
 
+Other ways to display the "Out of Date" box snippet:
+
+1. Use the `[out_of_date]` shortcode
+1. Call the DX_Out_Of_Date::outdated_box_generator() function right before rendering the post
+
 == Frequently Asked Questions ==
 
 = How to configure the duration/period settings? =

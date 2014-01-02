@@ -56,21 +56,34 @@ class DX_Out_Of_Date {
 	}
 	
 	/**
-	 * Filtering the content.
+	 * Filtering the content for a single view.
 	 * 
-	 * Validating the settings and the intervals before displaying the box.
+	 * @uses DX_Out_Of_Date::outdated_box_generator for the core functionality
 	 * 
 	 * @param string $content the original post content
 	 * @return string the altered content entry with the box
 	 */
 	public function top_content_filter_callback( $content ) {
+		$box = $this->outdated_box_generator();
+		
+		return $box . $content;
+	}
+	
+	/**
+	 * The core function for displaying the box generator for outdated posts.
+	 * 
+	 * Used by the the_content filter, shortcode, and standalone.
+	 * 
+	 * @return string box markup or empty string if irrelevant.
+	 */
+	public static function outdated_box_generator() {
 		$ood_setting = get_option( 'ood_setting', array() );
-
+		
 		// If no options are set, bail
-		if ( empty( $ood_setting['dx_ood_duration_frame'] ) 
-			|| empty( $ood_setting['dx_ood_period'] )
-			|| empty( $ood_setting['dx_ood_message'] ) ) {
-			return $content;
+		if ( empty( $ood_setting['dx_ood_duration_frame'] )
+		|| empty( $ood_setting['dx_ood_period'] )
+		|| empty( $ood_setting['dx_ood_message'] ) ) {
+			return '';
 		}
 		
 		// Read the options from the admin page
@@ -86,13 +99,13 @@ class DX_Out_Of_Date {
 		
 		// Don't filter if the post is recent.
 		if( $interval < $period ) {
-			return $content;
+			return '';
 		}
 		
 		// Generate the box
 		$box = '<div class="out-of-date">' . do_shortcode( $message ). '</div>';
 		
-		return $box . $content;
+		return $box;
 	}
 	
 	/**
@@ -121,10 +134,25 @@ class DX_Out_Of_Date {
 	 */
 	public function add_shortcodes() {
 		add_shortcode( 'ood_date' , array( $this, 'ood_date_shortcode' ) );
+		add_shortcode( 'out_of_date', array( $this, 'ood_core_shortcode' ) );
 	}
 	
+	/**
+	 * Render the post date in a shortcode (for the message format)
+	 * 
+	 * @return string the post date
+	 */
 	public function ood_date_shortcode( $atts, $content ) {
 		return get_the_date();
+	}
+	
+	/**
+	 * Call the "Out of Date" functionality as a shortcode in a post's body 
+	 * 
+	 * @return string the box HTML
+	 */
+	public function ood_core_shortcode( $atts, $content = '' ) {
+		return $this->outdated_box_generator();
 	}
 	
 	/**
