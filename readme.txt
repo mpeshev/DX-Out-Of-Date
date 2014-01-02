@@ -51,6 +51,13 @@ means that every post older than 6 months would be qualified as "outdated".
 
 Not without some small plugin modifications. However, the `clean` skin adds no styles at all, which means that you could
  easily style the `.out-of-date` class in the frontend in your custom theme stylesheet.
+ 
+= Why would I need that plugin? =
+
+If you write tutorials or articles related to products/services in a given state, 
+updating them could affect the validity of your resources. A good example is one of
+ the resources that led to building the plugin - [Brandon's blog](http://www.brandonsavage.net/making-life-better-with-the-spl-autoloader/),
+with his custom approach for marking tutorials as outdated.
 
 == Screenshots ==
 
