@@ -14,8 +14,8 @@ Display a notification box on the single view of your outdated posts, given a se
 
 DX Out of Date allows you to display a notification box on your posts 
 when a given amount of time has passed. Quite handy when writing tutorials
- or any content that might get outdated due to external factors - now you could automatically
-  notify your readers after a given period.
+ or any content that might get outdated due to external factors - now you
+ could automatically notify your readers after a given period.
 
 You could configure the expiration time of your posts in the admin panel. Valid time units are days, months and years.
 
